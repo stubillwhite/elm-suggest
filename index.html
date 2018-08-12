@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Elm example</title>
+
+        <!-- <script src="bower_components/webcomponentsjs/webcomponents.js"></script> -->
+        <link rel="import" href="bower_components/paper-autocomplete/paper-autocomplete.html">
+    </head>
+    <body>
+        <div id="elm-area"></div>
+        <script src="./elm.js"></script>
+        <script>
+
+         function onTextChange(event) {
+             var text = event.detail.value;
+             app.ports.receiveData.send(text);
+         };
+         
+         const app = Elm.Main.embed(document.getElementById("elm-area"));
+
+         app.ports.setData.subscribe(
+             function(config) {
+                 console.log("Javascript recieved: ", config);
+                 var id = '#' + config.id;
+
+                 var dropdown = document.querySelector(id)
+                 dropdown.source = config.values;
+
+                 dropdown.removeEventListener('text-changed', onTextChange);
+                 dropdown.addEventListener('text-changed', onTextChange);
+             }
+         );
+        </script>
+    </body>
+</html>
+
